@@ -42,7 +42,7 @@ class PersonTest {
 		Mockito.when(personDao.findFirstPerson()).thenReturn(p);
 		String actual = personDao.findFirstPerson().getFirstName();
 //		String actual = welcomeService.getFirstPersonFirstName();
-		String expect = "傑森1";
+		String expect = "傑森2";
 
 		Assertions.assertNotNull(actual);
 		Assertions.assertEquals(expect, actual);
