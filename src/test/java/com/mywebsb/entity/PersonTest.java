@@ -18,7 +18,7 @@ class PersonTest {
 //	private static final Logger logger = LoggerFactory.getLogger(PersonTest.class);
 	
 	private Person p = new Person();
-	private String stubFirstName = "傑森2";
+	private String stubFirstName = "傑森";
 
 	@Mock
 	private PersonDAO personDao;
