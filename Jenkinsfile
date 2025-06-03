@@ -9,7 +9,7 @@ pipeline {
     }
     parameters {
         choice(name: 'DEPLOY_ENV', choices: ['dev', 'staging', 'prod'], description: 'Deployment environment')
-        string(name: 'VERSION', defaultValue: '1.0.1', description: 'Version to deploy')
+        string(name: 'VERSION', defaultValue: '1.0.2', description: 'Version to deploy')
     }
     stages {
         stage('Flow Startup') {
@@ -128,6 +128,8 @@ pipeline {
 							docker run -td --name $container -p 8080:8080 $image
 							docker network connect $network $container
 							docker exec -t $container java -jar my-web-sb-v1-demo.war
+							
+							open -a "Google Chrome" http://localhost:8080/MyWeb
                         '''
                     }
                 }
