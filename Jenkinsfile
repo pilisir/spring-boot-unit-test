@@ -127,9 +127,7 @@ pipeline {
 							
 							docker run -td --name $container -p 8080:8080 $image
 							docker network connect $network $container
-							docker exec -t $container java -jar my-web-sb-v1-demo.war
-							
-							open -a "Google Chrome" http://localhost:8080/MyWeb
+							docker exec -t $container bash -c "java -jar my-web-sb-v1-demo.war"
                         '''
                     }
                 }
