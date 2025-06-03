@@ -86,7 +86,7 @@ pipeline {
                         // sh '''echo ${SC_DOCKER_HUB_TOKEN_PSW} | docker login -u ${VAR_DOCKER_USERNAME} --password-stdin'''
                         sh 'docker login -u ${VAR_DOCKER_USERNAME} -p ${SC_DOCKER_HUB_TOKEN_PSW}'
                         sh 'docker push ${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VERSION}'
-                        sh 'docker image rm ${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VERSION}'
+                        //sh 'docker image rm ${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VERSION}'
 
                     }
                 }
