@@ -86,8 +86,49 @@ pipeline {
                         // sh '''echo ${SC_DOCKER_HUB_TOKEN_PSW} | docker login -u ${VAR_DOCKER_USERNAME} --password-stdin'''
                         sh 'docker login -u ${VAR_DOCKER_USERNAME} -p ${SC_DOCKER_HUB_TOKEN_PSW}'
                         sh 'docker push ${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VERSION}'
+                        
                         sh 'docker image rm ${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VERSION}'
+                    }
+                }
+            }
+        }
+ 		stage('Deploy Host Docker') {
+            tools {
+                dockerTool 'docker'
+            }
+            environment {
+                VAR_DOCKER_IMAGE_TAG = '1.0'
+                VAR_DOCKER_USERNAME = 'pilisir'
+                SC_DOCKER_HUB_TOKEN = credentials('pilisir-dockerhub')
+            }
+            steps {
+                echo "======= Deploy to Host Docker ======="
+                script {
+                    docker.withServer('tcp://docker-tcp-socat:2375', 'pilisir-dockerhub') {
+                        
+                        sh 'docker build -t ${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VERSION} .'
 
+
+                        
+                        sh '''
+                        	image="${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VERSION}"
+							container="sbut-myweb-jenkins-v${VERSION}"
+							network="my-network"
+							
+							docker start oracle-xe-21c
+							
+							printf "\r%s" "#####                     (33%)"
+							sleep 2
+							printf "\r%s" "#############             (66%)"
+							sleep 2
+							printf "\r%s" "#######################   (100%)"
+							echo "\n"
+							sleep 1
+							
+							docker run -td --name $container -p 8080:8080 $image
+							docker network connect $network $container
+							docker exec -t $container java -jar my-web-sb-v1-demo.war
+                        '''
                     }
                 }
             }
