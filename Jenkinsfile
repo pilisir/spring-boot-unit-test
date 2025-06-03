@@ -106,10 +106,6 @@ pipeline {
                 script {
                     docker.withServer('tcp://docker-tcp-socat:2375', 'pilisir-dockerhub') {
                         
-                        sh 'docker build -t ${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VERSION} .'
-
-
-                        
                         sh '''
                         	image="${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VERSION}"
 							container="sbut-myweb-jenkins-v${VERSION}"
