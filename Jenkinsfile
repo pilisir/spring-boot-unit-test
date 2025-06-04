@@ -9,7 +9,7 @@ pipeline {
     }
     parameters {
         choice(name: 'DEPLOY_ENV', choices: ['dev', 'staging', 'prod'], description: 'Deployment environment')
-        string(name: 'VERSION', defaultValue: '1.0.2', description: 'Version to deploy')
+        string(name: 'VERSION', defaultValue: '1.0.3', description: 'Version to deploy')
     }
     stages {
         stage('Flow Startup') {
