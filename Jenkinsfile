@@ -5,7 +5,7 @@ pipeline {
     environment {
         VAR_AUTHOR = 'Jason'
         VAR_ORIGINAL_WORKSPACE = "${env.WORKSPACE}"
-        VAR_VERSION = '1.0.3'
+        VAR_VERSION = '1.0.4'
         
         SC_PASSWORD = credentials('password-test')
     }
@@ -92,6 +92,44 @@ pipeline {
                         sh 'docker image rm ${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VAR_VERSION}'
                     }
                 }
+            }
+        }
+        stage('Send Email Request for Deployment to Manager') {
+            steps {
+                script {
+                    def username = "mana";
+                    def mail = getUserEmail(username)
+                    
+                    // echo "${username} = ${mail}"
+                    
+                    emailext(
+                        subject: "APPROVAL RQD [JENKINS] ${currentBuild.fullDisplayName}",
+                        from: 'jenkins@8087.test',
+                        to: "pilisir.tw@gmail.com",
+                        mimeType: "text/html",
+                        body: """
+                            Dear, ${username} <br>
+                            請<a href="${BUILD_URL}input">批准</a>已立即部署。
+                        """
+                    )
+                }
+            }
+        }
+        stage('Pasue and wait the Approve') {
+            input {
+                message '請確認是否部署?'
+                id 'envId'
+                ok '開始部署'
+                submitterParameter 'approverId'
+                submitter 'mana' // who can approve this
+                // parameters {
+                //     choice choices: ['Prod', 'Pre-Prod'], name: 'envType'
+                // }
+            }
+
+            steps {
+                echo "Deployment approved by ${approverId}."
+
             }
         }
  		stage('Deploy Host Docker') {
