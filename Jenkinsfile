@@ -4,12 +4,14 @@ pipeline {
     agent any
     environment {
         VAR_AUTHOR = 'Jason'
-        SC_PASSWORD = credentials('password-test')
         VAR_ORIGINAL_WORKSPACE = "${env.WORKSPACE}"
+        VAR_VERSION = '1.0.3'
+        
+        SC_PASSWORD = credentials('password-test')
     }
     parameters {
         choice(name: 'DEPLOY_ENV', choices: ['dev', 'staging', 'prod'], description: 'Deployment environment')
-        string(name: 'VERSION', defaultValue: '1.0.3', description: 'Version to deploy')
+        // string(name: 'VERSION', defaultValue: '1.0.3', description: 'Version to deploy')
     }
     stages {
         stage('Flow Startup') {
@@ -82,12 +84,12 @@ pipeline {
                         // dockerImage.push()
                         
                         // sh("docker version")
-                        sh 'docker build -t ${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VERSION} .'
+                        sh 'docker build -t ${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VAR_VERSION} .'
                         // sh '''echo ${SC_DOCKER_HUB_TOKEN_PSW} | docker login -u ${VAR_DOCKER_USERNAME} --password-stdin'''
                         sh 'docker login -u ${VAR_DOCKER_USERNAME} -p ${SC_DOCKER_HUB_TOKEN_PSW}'
-                        sh 'docker push ${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VERSION}'
+                        sh 'docker push ${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VAR_VERSION}'
                         
-                        sh 'docker image rm ${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VERSION}'
+                        sh 'docker image rm ${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VAR_VERSION}'
                     }
                 }
             }
@@ -107,8 +109,8 @@ pipeline {
                     docker.withServer('tcp://docker-tcp-socat:2375', 'pilisir-dockerhub') {
                         
                         sh '''
-                        	image="${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VERSION}"
-							container="sbut-myweb-jenkins-v${VERSION}"
+                        	image="${VAR_DOCKER_USERNAME}/spring-boot-unit-test-myweb-jenkins:${VAR_VERSION}"
+							container="sbut-myweb-jenkins-v${VAR_VERSION}"
 							network="my-network"
 							
 							docker start oracle-xe-21c
