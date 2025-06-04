@@ -1,5 +1,14 @@
 // Jenkinsfile
 
+import hudson.model.User
+import hudson.tasks.Mailer
+
+def getUserEmail(username) {
+    def user = User.get(username, false)
+    def prop = user?.getProperty(Mailer.UserProperty)
+    return prop?.getAddress()
+}
+
 pipeline {
     agent any
     environment {
