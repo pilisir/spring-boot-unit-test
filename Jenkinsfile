@@ -123,7 +123,6 @@ pipeline {
 							
 							docker run -td --name $container -p 8080:8080 $image
 							docker network connect $network $container
-							
 							docker exec -t $container bash -c "java -jar my-web-sb-v1-demo.war > /tmp/output.log 2>&1"
                         '''
                     }
